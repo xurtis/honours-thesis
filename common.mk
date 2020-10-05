@@ -90,19 +90,17 @@ RST_LATEX_PREAMBLE= \
 	\usepackage{fontspec} \
 	\usepackage[authoryear,square,sort]{natbib} \
 	\setcounter{secnumdepth}{2}
-RST_DEFAULT_FLAGS = \
+RST_FLAGS = \
 	--section-numbering	\
 	--language=en-AU \
 	--syntax-highlight=short \
 	--smart-quotes=alt \
-	--hyperref-options="colorlinks=false"
-RST_FLAGS = \
-	${RST_DEFAULT_FLAGS} \
+	--hyperref-options="colorlinks=false" \
 	--latex-preamble='${RST_LATEX_PREAMBLE}'
 
 ${BUILD_DIR}/%.tex: %.rst ${BUILD_DIR} ${PYGMENTS_PATH}
 	@printf "\x1b[1;37m>>> reStructuredText: $< -> $@ <<<\x1b[0m\n"
-	${RST2LATEX} ${RST_FLAGS} $< $@
+	@${RST2LATEX} ${RST_FLAGS} $< $@
 
 # SVGs via Inkscape
 # =================

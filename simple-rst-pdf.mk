@@ -12,10 +12,5 @@ clean:
 
 include ${mkfile_path}/common.mk
 
-RST_FLAGS := \
-	${RST_DEFAULT_FLAGS} \
-	--use-latex-docinfo \
-	--latex-preamble=' \
-		${RST_LATEX_PREAMBLE} \
-		\usepackage[margin=25mm]{geometry} \
-	'
+RST_LATEX_PREAMBLE += \usepackage[margin=25mm]{geometry}
+RST_FLAGS += --use-latex-docinfo
