@@ -13,31 +13,36 @@
 
    \providecommand*\DUroletodo[1]{{\color{red}{[\textbf{TODO:} #1]}}}
 
-.. role:: cite
+.. role:: cite(raw)
+    :format: latex
 
 .. raw:: latex
 
    \providecommand*\DUrolecite[1]{\citep{#1}}
 
-.. role:: label
+.. role:: label(raw)
+    :format: latex
 
 .. raw:: latex
 
    \providecommand*\DUrolelabel[1]{\label{#1}}
 
-.. role:: ref
+.. role:: ref(raw)
+    :format: latex
 
 .. raw:: latex
 
    \providecommand*\DUroleref[1]{\autoref{#1}}
 
-.. role:: chapterref
+.. role:: chapterref(raw)
+    :format: latex
 
 .. raw:: latex
 
    \providecommand*\DUrolechapterref[1]{\hyperref[#1]{Chapter~\ref*{#1}}}
 
-.. role:: latex
+.. role:: latex(raw)
+    :format: latex
 
 .. raw:: latex
 
@@ -120,7 +125,7 @@ low-assurance components.
 
 This project builds on the work that produced seL4, a trustworthy
 microkernel that has been proved to guarantee isolation of software
-components, and the work from :cite:`Ly2018` to extend the seL4
+components, and the work from :cite:`Lyons:phd` to extend the seL4
 microkernel with explicit concepts of scheduling and time that enable it
 to guarantee the timing requirements of real-time software components.
 
@@ -163,9 +168,9 @@ kernel can pass information between *protection domains* that would
 otherwise isolate the threads from each other. This is used as the basis
 for inter-process communication.
 
-:cite:`Li1995` characterises a *microkernel* by stating "a concept is
-tolerated inside the |mu|-kernel only if moving it outside the kernel,
-i.e. permitting competing implementations, would prevent the
+:cite:`Liedtke_95` characterises a *microkernel* by stating "a concept
+is tolerated inside the |mu|-kernel only if moving it outside the
+kernel, i.e. permitting competing implementations, would prevent the
 implementation of the system's required functionality."
 
 The L4 family of microkernels implement a minimal feature-set that
@@ -200,11 +205,11 @@ guarantee. If the process of determining the guarantees of a highly
 critical application is expensive, then it is desirable for that
 applications TCB to be as small as possible.
 
-:cite:`Kl2009` presented seL4, a L4 microkernel with a complete
-functional correctness proof. :cite:`Se2011` outline the formal
-verification of enforcement of access control in seL4. The formal
-verification proves that the kernel is guaranteed to correctly isolate
-user-level components which makes seL4 a trustworthy basis for
+:cite:`Klein_EHA_etal_09` presented seL4, a L4 microkernel with a
+complete functional correctness proof. :cite:`Sewell_WGMAK_11` outline
+the formal verification of enforcement of access control in seL4. The
+formal verification proves that the kernel is guaranteed to correctly
+isolate user-level components which makes seL4 a trustworthy basis for
 safety-critical or security-critical systems.
 
 Real-time systems
@@ -222,7 +227,7 @@ processing hardware used in such applications can also vary widely, from
 low-power embedded microcontrollers to large multiprocessor systems
 including processors dedicated to particular processing operations.
 
-:cite:`Li2000` characterises real-time applications as a collection of
+:cite:`Liu:rts` characterises real-time applications as a collection of
 *tasks* and a set of *resources*. Each task is a sequence of *jobs* that
 must be allocated some of the system's resources in order to complete.
 A resource may be *finite*, where only a limited number of tasks can
@@ -487,13 +492,13 @@ Related Work
 KeyKOS
 ------
 
-The KeyKOS microkernel :cite:`Ha1985` implements hierarchical scheduling
-using *meters* to control delegation of execution time on the CPU and
-*meter keys* which act as capabilities that confer access to delegated
-execution time with which a *domain* can execute. All time used via a
-meter key is tracked in every meter from the root to the meter which
-produced the key. When the time associated with a meter key is
-exhausted, the *meter keeper* is invoked to manage the delegation of
+The KeyKOS microkernel :cite:`Hardy_85` implements hierarchical
+scheduling using *meters* to control delegation of execution time on the
+CPU and *meter keys* which act as capabilities that confer access to
+delegated execution time with which a *domain* can execute. All time
+used via a meter key is tracked in every meter from the root to the
+meter which produced the key. When the time associated with a meter key
+is exhausted, the *meter keeper* is invoked to manage the delegation of
 further time.
 
 This system allows for a *meter keeper* to make scheduling decisions at
@@ -508,10 +513,10 @@ respond to scheduling events.
 NOVA Microhypervisor
 --------------------
 
-The NOVA microhypervisor :cite:`StBoKa2010` provides scheduling contexts
-(SC) that encapsulate a priority level and a time *quantam*. The time
-quantum describes the amount of time for which a thread may execute
-before it is preempted by a thread of equal priority.
+The NOVA microhypervisor :cite:`Steinberg_BK_10` provides scheduling
+contexts (SC) that encapsulate a priority level and a time *quantam*.
+The time quantum describes the amount of time for which a thread may
+execute before it is preempted by a thread of equal priority.
 
 When a client thread performs a blocking call that is handled by a lower
 priority server thread on the same core, the client donates the SC to
@@ -531,15 +536,16 @@ provide any level of temporal isolation between components.
 Composite
 ---------
 
-The Composite microkernel :cite:`PaWe2008, GaPaPa2020` makes a wide
-variety for schedulers possible at user-level. *TCaps* :cite:`Ga2017`
-are temporal capabilities that control explicit access to execution time
-on a particular CPU. They provide a single finite amount of time at a
-particular global priority. A user-level scheduler can construct access
-to multiple instances of time to implement recurring releases of a
-thread with a TCap for each release. As each TCap has an associated
-global priority, distinct jobs within a task can be assigned different
-priorities if they are released using distinct TCaps.
+The Composite microkernel :cite:`Parmer_West_08, GaPaPa2020` makes a
+wide variety for schedulers possible at user-level. *TCaps*
+:cite:`Gadepalli_GBKP_17` are temporal capabilities that control
+explicit access to execution time on a particular CPU. They provide a
+single finite amount of time at a particular global priority. A
+user-level scheduler can construct access to multiple instances of time
+to implement recurring releases of a thread with a TCap for each
+release. As each TCap has an associated global priority, distinct jobs
+within a task can be assigned different priorities if they are released
+using distinct TCaps.
 
 Composite uses a migrating thread model for IPC. When a thread executing
 in one component calls into another component, the thread context is
@@ -564,18 +570,18 @@ thread execution within a scheduling component.
 Quest-V Hypervisor
 ------------------
 
-:cite:`MaLiWe2011` utilise the sporadic server model described by
-:cite:`St2010` to implement real-time scheduling for virtual-CPU
-contexts in the Quest-V hypervisor. All tasks are executed using a *Main
-VCPU* context which is scheduled using the algorithms from
-:cite:`St2010`. When a task needs to perform an I/O operation with
-an external device, it communicates with a driver on an *I/O VCPU* which
-is responsible to directly communicating with hardware. Each I/O VCPU is
-scheduled with minimal logic to preserve bandwidth. When an I/O VCPU
-handles a request from a Main VCPU, it inherits the priority of the Main
-CPU until the request is complete.
+:cite:`Danish_LW_11` utilise the sporadic server model described by
+:cite:`Stanovic_BWH_10` to implement real-time scheduling for
+virtual-CPU contexts in the Quest-V hypervisor. All tasks are executed
+using a *Main VCPU* context which is scheduled using the algorithms from
+:cite:`Stanovic_BWH_10`. When a task needs to perform an I/O operation
+with an external device, it communicates with a driver on an *I/O VCPU*
+which is responsible to directly communicating with hardware. Each I/O
+VCPU is scheduled with minimal logic to preserve bandwidth. When an I/O
+VCPU handles a request from a Main VCPU, it inherits the priority of the
+Main CPU until the request is complete.
 
-:cite:`MaLiWe2011` note that the overheads from the complexity of the
+:cite:`Danish_LW_11` note that the overheads from the complexity of the
 sporadic server implementation have a noticeable impact on throughput
 and that the I/O VCPUs benefit from the simplified bandwidth
 preservation logic.
@@ -588,7 +594,7 @@ software resources.
 Flattening hierarchical mixed criticality scheduling
 ----------------------------------------------------
 
-:cite:`VoLaHa2013` describe a way in which a system of temporally
+:cite:`Volp_LH_13` describe a way in which a system of temporally
 isolated real-time tasks, encapsulated with *scheduling contexts*, can
 be used as the basis for a hierarchical system of independent real-time
 components. They also describe how different scheduling algorithms may
@@ -629,12 +635,12 @@ with the correct operation of high-criticality tasks.
 MC-IPC
 ------
 
-:cite:`Br2014` describes a system of encapsulating shared resources in
-*resource servers* and describes a protocol, *MC-IPC*, for communication
-between tasks of varying criticality that preserves 'temporal and
-logical isolation'. This allows for the effective use of resources
-shared between tasks of differing criticality. The protocol implements a
-priority inheritance that is fair across multiple cores.
+:cite:`Brandenburg_14` describes a system of encapsulating shared
+resources in *resource servers* and describes a protocol, *MC-IPC*, for
+communication between tasks of varying criticality that preserves
+'temporal and logical isolation'. This allows for the effective use of
+resources shared between tasks of differing criticality. The protocol
+implements a priority inheritance that is fair across multiple cores.
 
 The system reduces the assurance burden and the level of trust required
 of low-criticality tasks that share resources with high-criticality
@@ -687,7 +693,7 @@ clients.
 seL4 mixed criticality scheduling
 ---------------------------------
 
-:cite:`Ly2018` presents a modification to the scheduler used by seL4
+:cite:`Lyons:phd` presents a modification to the scheduler used by seL4
 microkernel, enabling the construction of mixed criticality real-time
 systems. It introduces explicit scheduling context objects that
 represent access to processor time which can be managed at user-level.
@@ -723,7 +729,7 @@ Scope
 
 This project aims to investigate the process of building
 mixed-criticality real-time systems on consolidated hardware using the
-seL4 microkernel along with the changes provided by :cite:`Ly2018`.
+seL4 microkernel along with the changes provided by :cite:`Lyons:phd`.
 This work will include demonstrating how independent real-time systems
 and non real-time software can be scheduled on common hardware while
 ensuring that they are temporally isolated from each other as well as
@@ -763,7 +769,7 @@ existing components, we will produce a collection of tools to trace the
 scheduling and IPC operations in a system as well as tools to analyse
 and compare these traces. These will build on existing work for tracing
 kernel operations in seL4 and tracing and analysing scheduler operations
-in seL4 :cite:`Ho2018`.
+in seL4 :cite:`Holzapfel:be`.
 
 These tools will need to be able to track events on IPC objects
 (endpoints, notifications, and reply objects), and associate IPC and
@@ -842,17 +848,17 @@ Alternate scheduling in subsystems
 ----------------------------------
 
 To demonstrate that different systems can be scheduled using independent
-scheduling algorithms, as suggested by :cite:`VoLaHa2013`, we will
+scheduling algorithms, as suggested by :cite:`Volp_LH_13`, we will
 implement a specific dynamic-priority scheduling algorithm by having a
 control component with performs priority assignment and task selection
-at user level. :cite:`Ly2018` has already shown a simple case where this
+at user level. :cite:`Lyons:phd` has already shown a simple case where this
 could work using seL4 alone. To show that this can be done separately
 for each subsystem, this will only depend on the guarantees provided by
 the kernel and the root-level admissions control component.
 
 .. Demonstrate that each subsystem can define their own internal
    scheduling mechanism mased on the root scheduler using in the manner
-   of :cite:`VoLaHa2013`.
+   of :cite:`Volp_LH_13`.
 
     * Static fixed-task priority subsystem
     * Tasks with dynamic job priorities
@@ -875,7 +881,7 @@ non-bandwidth-limiting period. The impact of these changes will be
 benchmarked and used to evaluate the efficacy of the changes and to
 determine where possible optimisations could be added.
 
-.. :cite:`VoLaHa2013` suggests that changes will need to be made to SCs
+.. :cite:`Volp_LH_13` suggests that changes will need to be made to SCs
    in order to support a wider range of behaviours for different
    scheduling algorithms. May not be the same as those described in the
    paper. What overheads do these changes add?
@@ -932,7 +938,7 @@ may also be possible to prevent clients from requesting a service until
 they have sufficient time. We will investigate both of these approaches.
 
 .. Implementation of shared resource servers with temporal isolation
-   guarantees. :cite:`Br2014` will be a strong reference for this
+   guarantees. :cite:`Brandenburg_14` will be a strong reference for this
    component.
 
    Recovery of shared resources when a server exceeds the provided
@@ -945,7 +951,7 @@ We will build a real world system will to demonstrate the application of
 the theoretical real-time systems primitives developed during this
 project to the construction of real-world systems. The target system
 will be based on a existing quad-copter system
-:cite:`Cofer18` work that will be extended to comprise a
+:cite:`Cofer_GBWPFPKKAHS_18` work that will be extended to comprise a
 realistic mix of mixed criticality and shared components.
 
 The high-criticality subsystem will be the flight control system. The
