@@ -3,70 +3,120 @@ CC=clang
 
 RST2LATEX = rst2latex
 PYGMENTS_THEME = pastie
-PYGMENTS_STYLE = sty/pygments-${PYGMENTS_THEME}.sty
+PYGMENTS_STYLE = ${BUILD_DIR}/sty/pygments-${PYGMENTS_THEME}.sty
 RST_FLAGS = \
 	--section-numbering	\
 	--language=en-AU \
-	--use-latex-docinfo \
-	--topic-abstract \
-	--documentclass="article" \
-	--documentoptions="a4paper" \
-	--use-latex-citations \
 	--syntax-highlight=short \
 	--smart-quotes=alt \
+	--hyperref-options="colorlinks=false" \
 	--latex-preamble=" \
-		\usepackage[a4paper, margin=25mm]{geometry} \
-		\usepackage{multicol} \
-		\usepackage{amsmath} \
-		\usepackage{mathtools} \
-		\usepackage{centernot} \
-		\usepackage{xfrac} \
-		\usepackage[utf8]{inputenc} \
-		\usepackage[backend=biber, style=authoryear, citestyle=authoryear]{biblatex} \
+		\usepackage{csquotes} \
 		\usepackage{sty/pygments-${PYGMENTS_THEME}} \
 		\usepackage{fontspec} \
-		\usepackage{svg} \
-		\renewcommand{\familydefault}{\sfdefault} \
-		\setmonofont{Fira Mono}[Contextuals=Alternate, Scale=MatchLowercase] \
-		\setsansfont{Fira Sans}[Contextuals=Alternate, Scale=MatchLowercase] \
+		\usepackage[authoryear,square,sort]{natbib} \
+		\setcounter{secnumdepth}{2} \
 	"
-LATEX=lualatex
-LATEX_FLAGS=\
-	-interaction=nonstopmode
+LATEX=lualatex -interaction=nonstopmode --shell-escape -8bit
 
-PDFS=$(patsubst %.rst,%.pdf,$(wildcard **/*.rst))
-TEXS=$(patsubst %.rst,%.tex,$(wildcard **/*.rst))
-DOT_PNGS=$(patsubst %.dot,%.png,$(wildcard **/*.dot))
+# BIBINPUTS must refer to the directory of .bib files
+BIBINPUTS ?= $(shell pwd)
+BIBTEX = bibtex
 
-.PHONY: clean
-all: ${PDFS} ${DOT_PNGS}
+BUILD_DIR := build
+
+PDFS=$(patsubst %.rst,%.pdf,$(wildcard *.rst))
+
+.PHONY: all
+all: ${PDFS}
 
 .PHONY: clean
 clean:
-	git clean -fX $(wildcard **/)
-	rm -rf ${PDFS} ${TEXS} ${DOT_PNGS}
+	rm -rf "${BUILD_DIR}" ${PDFS}
+
+${BUILD_DIR}/thesis-a-pre-report.pdf: \
+	${BUILD_DIR}/thesis-a-pre-report.bbl \
+	${BUILD_DIR}/thesis-a-pre-report.aux
+
+${BUILD_DIR}/thesis-a-pre-report.bbl: \
+	${BUILD_DIR}/thesis-a-pre-report.aux
+
+${BUILD_DIR}/thesis-a-pre-report.aux: \
+	${BUILD_DIR}/unswthesis.cls \
+	${BUILD_DIR}/thesis-a-pre-report.tex \
+	${BUILD_DIR}/abstract.tex \
+	${BUILD_DIR}/abbreviations.tex \
+	${BUILD_DIR}/thesis-details.tex \
+	${BUILD_DIR}/crest.eps \
+	${BUILD_DIR}/timeline.eps \
+	${BUILD_DIR}/microkernel.eps
+
+${BUILD_DIR}/thesis-a-pre-report.tex: \
+	RST_FLAGS += \
+		--documentclass="unswthesis" \
+		--documentoptions="a4paper,oneside,singlespacing" \
+		--template="unsw-thesis.tex"
 
 # Build Rules
 # ===========
 
-sty/pygments-%.css:
-	mkdir -p sty
-	pygmentize \
+${BUILD_DIR}/sty/pygments-%.css:
+	@printf "\x1b[1;37m>>> $@ <<<\x1b[0m\n"
+	@mkdir -p ${BUILD_DIR}/sty
+	@pygmentize \
 		-f html \
-		-S $(patsubst sty/pygments-%.css,%,$@) \
+		-S $(patsubst ${BUILD_DIR}/sty/pygments-%.css,%,$@) \
 		> $@
 
-sty/pygments-%.sty: sty/pygments-%.css
-	./pygments_css2sty.py < $< > $@
+%.sty: %.css
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@./pygments_css2sty.py < $< > $@
 
-%.tex: %.rst
+%.tex: %.rst references.bib
 	${RST2LATEX} ${RST_FLAGS} $< $@
 
-%.pdf: %.tex ${PYGMENTS_STYLE} ${DOT_PNGS}
-	${LATEX} ${LATEX_FLAGS} -jobname=$(patsubst %.pdf,%,$@) $<
-	biber $(patsubst %.tex,%.bcf,$<)
-	${LATEX} ${LATEX_FLAGS} -jobname=$(patsubst %.pdf,%,$@) $<
+${BUILD_DIR}/%.tex: %.rst
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@mkdir -p ${BUILD_DIR}
+	@${RST2LATEX} ${RST_FLAGS} $< $@
 
-# Dotfile diagrams
-%.png: %.dot
-	dot -Tpng $^ > $@
+${BUILD_DIR}/%.tex: %.tex
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@rm -f $@
+	@cp -l $< $@
+
+${BUILD_DIR}/%.aux: ${BUILD_DIR}/%.tex ${PYGMENTS_STYLE}
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@cd ${BUILD_DIR} && \
+		${LATEX} $(patsubst ${BUILD_DIR}/%.tex,%,$<)
+
+${BUILD_DIR}/%.bbl: ${BUILD_DIR}/%.aux
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@cd ${BUILD_DIR} && \
+		${BIBTEX} $(patsubst ${BUILD_DIR}/%.aux,%,$<)
+
+${BUILD_DIR}/%.pdf: ${BUILD_DIR}/%.tex ${PYGMENTS_STYLE}
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@cd ${BUILD_DIR} && \
+		${LATEX} $(patsubst ${BUILD_DIR}/%.tex,%,$<) && \
+		${LATEX} $(patsubst ${BUILD_DIR}/%.tex,%,$<)
+
+%.pdf: ${BUILD_DIR}/%.pdf
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@rm -f $@
+	@cp -l $< $@
+
+${BUILD_DIR}/%.cls: %.cls
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@rm -f $@
+	@cp -l $< $@
+
+${BUILD_DIR}/%.eps: %.svg
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@mkdir -p ${BUILD_DIR}
+	@inkscape -D -o $@ $<
+
+${BUILD_DIR}/%.eps: %.eps
+	@printf "\x1b[1;37m>>> $< -> $@ <<<\x1b[0m\n"
+	@rm -f $@
+	@cp -l $< $@
