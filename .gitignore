@@ -7,3 +7,6 @@
 *.blg
 /sty
 build/
+rtas21-mcs-tests/
+rtas21-mcs/
+sel4commonroot-demo/
