@@ -4,12 +4,37 @@
 
    \providecommand*\DUroletodo[1]{{\color{red}{[\textbf{TODO:} #1]}}}
 
+.. role:: tocite
+
+.. raw:: latex
+
+   \providecommand*\DUroletocite[1]{{\color{RoyalBlue}{[\textbf{CITE:} #1]}}}
+
+.. role:: reword
+
+.. raw:: latex
+
+   \providecommand*\DUrolereword[1]{{\color{orange}{[\textbf{REWORD:} #1]}}}
+
+.. role:: clarify
+
+.. raw:: latex
+
+   \providecommand*\DUroleclarify[1]{{\color{Fuchsia}{[\textbf{CLARIFY:} #1]}}}
+
 .. role:: cite(raw)
     :format: latex
 
 .. raw:: latex
 
    \providecommand*\DUrolecite[1]{\citep{#1}}
+
+.. role:: citet(raw)
+    :format: latex
+
+.. raw:: latex
+
+   \providecommand*\DUrolecitet[1]{\citet{#1}}
 
 .. role:: label(raw)
     :format: latex
@@ -39,6 +64,21 @@
 
    \providecommand*\DUrolelatex[1]{{#1}}
 
+.. role:: bibliography(raw)
+    :format: latex
+
+.. raw:: latex
+
+   \providecommand*\DUrolebibliography[1]{\bibliography{#1}}
+
+.. role:: textsc
+
+.. raw:: latex
+
+   \providecommand*\DUrolebibliography[1]{\textsc{#1}}
+
 .. |mu| raw:: latex
 
    \textmu
+
+.. |today| date:: %-d %B, %Y
