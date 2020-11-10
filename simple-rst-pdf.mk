@@ -12,5 +12,7 @@ clean:
 
 include ${mkfile_path}/common.mk
 
-RST_LATEX_PREAMBLE += \usepackage[margin=25mm]{geometry}
+RST_LATEX_PREAMBLE += \
+	\usepackage[margin=25mm]{geometry} \
+	\bibliographystyle{plainnat}
 RST_FLAGS += --use-latex-docinfo
