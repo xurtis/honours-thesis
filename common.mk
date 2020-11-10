@@ -6,31 +6,31 @@ mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 BUILD_DIR ?= build
 
 ${BUILD_DIR}:
-	@printf "\x1b[1;37m>>> Create: $@ <<<\x1b[0m\n"
-	@mkdir -p ${BUILD_DIR}
+	@printf "===>> Create directory: %s\n" "$@"
+	@mkdir -p "$@"
 
 ${BUILD_DIR}/%.eps: %.eps
-	@printf "\x1b[1;37m>>> Copy: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> Copy EPS: %s -> %s\n" "$<" "$@"
 	@rm -f $@
 	@cp -l $< $@
 
 ${BUILD_DIR}/%.tex: %.tex
-	@printf "\x1b[1;37m>>> Copy: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> Copy TEX: %s -> %s\n" "$<" "$@"
 	@rm -f $@
 	@cp -l $< $@
 
 ${BUILD_DIR}/%.bib: %.bib
-	@printf "\x1b[1;37m>>> Copy: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> Copy BIB: %s -> %s\n" "$<" "$@"
 	@rm -f $@
 	@cp -l $< $@
 
 ${BUILD_DIR}/%.cls: %.cls
-	@printf "\x1b[1;37m>>> Copy: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> Copy CLS: %s -> %s\n" "$<" "$@"
 	@rm -f $@
 	@cp -l $< $@
 
 %.pdf: ${BUILD_DIR}/%.pdf ${BUILD_DIR}/%.tex
-	@printf "\x1b[1;37m>>> Copy PDF: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> Copy PDF: %s -> %s\n" "$<" "$@"
 	@rm -f $@
 	@cp -l $< $@
 
@@ -42,7 +42,7 @@ PYGMENTS_STYLE ?= sty/${PYGMENTS_THEME}-pygments
 PYGMENTS_PATH  ?= ${BUILD_DIR}/${PYGMENTS_STYLE}.sty
 
 %-pygments.css:
-	@printf "\x1b[1;37m>>> Pygments CSS: $@ <<<\x1b[0m\n"
+	@printf "===>> Pygments CSS: %s\n" "$@"
 	@mkdir -p $(dir $@)
 	@pygmentize \
 		-f html \
@@ -50,7 +50,7 @@ PYGMENTS_PATH  ?= ${BUILD_DIR}/${PYGMENTS_STYLE}.sty
 		> $@
 
 %-pygments.sty: %-pygments.css
-	@printf "\x1b[1;37m>>> Pygments style: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> Pygments style: %s -> %s\n" "$<" "$@"
 	@${mkfile_path}/pygments_css2sty.py < $< > $@
 
 # LaTeX
@@ -63,17 +63,17 @@ BIBINPUTS ?= $(shell pwd)
 BIBTEX = bibtex
 
 %.aux: %.tex ${PYGMENTS_PATH}
-	@printf "\x1b[1;37m>>> LaTeX: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> LaTeX: %s -> %s\n" "$<" "$@"
 	@cd $(dir $<) && \
 		${LATEX} $(patsubst %.tex,%,$(notdir $<))
 
 %.bbl: %.aux
-	@printf "\x1b[1;37m>>> BibTex: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> BibTex: %s -> %s\n" "$<" "$@"
 	@cd $(dir $<) && \
 		${BIBTEX} $(patsubst %.aux,%,$(notdir $<))
 
 %.pdf: %.tex
-	@printf "\x1b[1;37m>>> LaTeX: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> LaTeX: %s -> %s\n" "$<" "$@"
 	@cd $(dir $<) && \
 		${LATEX} $(patsubst %.tex,%,$(notdir $<)) && \
 		${LATEX} $(patsubst %.tex,%,$(notdir $<))
@@ -100,12 +100,12 @@ RST_FLAGS = \
 	--latex-preamble='${RST_LATEX_PREAMBLE}'
 
 ${BUILD_DIR}/%.tex: %.rst ${BUILD_DIR} ${PYGMENTS_PATH}
-	@printf "\x1b[1;37m>>> reStructuredText: $< -> $@ <<<\x1b[0m\n"
+	@printf "===>> reStructuredText: %s -> %s\n" "$<" "$@"
 	@${RST2LATEX} ${RST_FLAGS} $< $@
 
 # SVGs via Inkscape
 # =================
 
 ${BUILD_DIR}/%.eps: %.svg ${BUILD_DIR}
-	@printf "\x1b[1;37m>>> Inkscape: $< -> $@ <<<\x1b[0m\n"
-	@inkscape -D -o $@ $<
+	@printf "===>> Inkscape: %s -> %s\n" "$<" "$@"
+	@inkscape -D -E $@ -f $<

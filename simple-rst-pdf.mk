@@ -1,14 +1,14 @@
 # This is enough of a makefile for simple-looking rST PDFs
 mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-PDFS := $(patsubst %.rst,%.pdf,$(wildcard *.rst))
+PDFS ?= $(patsubst %.rst,%.pdf,$(wildcard *.rst))
 
 .PHONY: all
 all: ${PDFS}
 
 .PHONY: clean
 clean:
-	rm -rf ${BUILD_DIR} ${PDFS}
+	rm -rf ${BUILD_DIR} ${PDFS} ${CLEAN_FILES}
 
 include ${mkfile_path}/common.mk
 
