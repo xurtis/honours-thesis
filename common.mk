@@ -88,6 +88,7 @@ RST_LATEX_PREAMBLE= \
 	\usepackage{csquotes} \
 	\usepackage{${PYGMENTS_STYLE}} \
 	\usepackage{fontspec} \
+	\usepackage[dvipsnames]{xcolor} \
 	\usepackage[authoryear,square,sort]{natbib} \
 	\setcounter{secnumdepth}{2}
 RST_FLAGS = \
