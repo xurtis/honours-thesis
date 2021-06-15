@@ -1,0 +1,68 @@
+{
+  "inputs": [
+    [
+      "low-period",
+      12500
+    ]
+  ],
+  "series": {
+    "correct-charge/[Baseline]": [
+      {
+        "stddev": 0.0,
+        "x": null,
+        "y": 83319
+      }
+    ],
+    "correct-charge/[Preemption]": [
+      {
+        "stddev": 0.0,
+        "x": 1,
+        "y": 83319
+      },
+      {
+        "stddev": 0.0,
+        "x": 2,
+        "y": 83319
+      },
+      {
+        "stddev": 0.0,
+        "x": 4,
+        "y": 83245
+      },
+      {
+        "stddev": 0.0,
+        "x": 8,
+        "y": 83133
+      }
+    ],
+    "sporadic/[Baseline]": [
+      {
+        "stddev": 0.0,
+        "x": null,
+        "y": 83319
+      }
+    ],
+    "sporadic/[Preemption]": [
+      {
+        "stddev": 0.0,
+        "x": 1,
+        "y": 83319
+      },
+      {
+        "stddev": 0.0,
+        "x": 2,
+        "y": 83319
+      },
+      {
+        "stddev": 0.0,
+        "x": 4,
+        "y": 83243
+      },
+      {
+        "stddev": 0.0,
+        "x": 8,
+        "y": 83133
+      }
+    ]
+  }
+}

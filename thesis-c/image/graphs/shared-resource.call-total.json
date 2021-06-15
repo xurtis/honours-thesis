@@ -1,0 +1,39 @@
+{
+  "inputs": [],
+  "series": {
+    "bounded-inversion/[SharedResource]": [
+      {
+        "stddev": 0.0,
+        "x": 2083,
+        "y": 0
+      },
+      {
+        "stddev": 0.0,
+        "x": 4166,
+        "y": 0
+      },
+      {
+        "stddev": 0.0,
+        "x": 8332,
+        "y": 0
+      }
+    ],
+    "sporadic/[SharedResource]": [
+      {
+        "stddev": 0.0,
+        "x": 2083,
+        "y": 0
+      },
+      {
+        "stddev": 0.0,
+        "x": 4166,
+        "y": 0
+      },
+      {
+        "stddev": 0.0,
+        "x": 8332,
+        "y": 0
+      }
+    ]
+  }
+}

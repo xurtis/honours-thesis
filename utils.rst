@@ -50,6 +50,13 @@
 
    \providecommand*\DUroleref[1]{\autoref{#1}}
 
+.. role:: label(raw)
+    :format: latex
+
+.. raw:: latex
+
+   \providecommand*\DUrolelabel[1]{\label{#1}}
+
 .. role:: chapterref(raw)
     :format: latex
 
@@ -82,3 +89,7 @@
    \textmu
 
 .. |today| date:: %-d %B, %Y
+
+.. |reg| unicode:: U+00AE .. registered trademark
+
+.. |regsup| replace:: :superscript:` |reg| `

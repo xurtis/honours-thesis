@@ -11,23 +11,27 @@ ${BUILD_DIR}:
 
 ${BUILD_DIR}/%.eps: %.eps
 	@printf "===>> Copy EPS: %s -> %s\n" "$<" "$@"
-	@rm -f $@
-	@cp -l $< $@
+	@rm -f "$@"
+	@mkdir -p $(dir $@)
+	@cp -l "$<" "$@"
 
 ${BUILD_DIR}/%.tex: %.tex
 	@printf "===>> Copy TEX: %s -> %s\n" "$<" "$@"
-	@rm -f $@
-	@cp -l $< $@
+	@rm -f "$@"
+	@mkdir -p $(dir $@)
+	@cp -l "$<" "$@"
 
 ${BUILD_DIR}/%.bib: %.bib
 	@printf "===>> Copy BIB: %s -> %s\n" "$<" "$@"
-	@rm -f $@
-	@cp -l $< $@
+	@rm -f "$@"
+	@mkdir -p $(dir $@)
+	@cp -l "$<" "$@"
 
 ${BUILD_DIR}/%.cls: %.cls
 	@printf "===>> Copy CLS: %s -> %s\n" "$<" "$@"
-	@rm -f $@
-	@cp -l $< $@
+	@rm -f "$@"
+	@mkdir -p $(dir $@)
+	@cp -l "$<" "$@"
 
 %.pdf: ${BUILD_DIR}/%.pdf ${BUILD_DIR}/%.tex
 	@printf "===>> Copy PDF: %s -> %s\n" "$<" "$@"
@@ -59,11 +63,16 @@ PYGMENTS_PATH  ?= ${BUILD_DIR}/${PYGMENTS_STYLE}.sty
 LATEX=lualatex -interaction=nonstopmode --shell-escape -8bit
 
 # BIBINPUTS must refer to the directory of .bib files
-BIBINPUTS ?= $(shell pwd)
+ifdef BIBINPUTS
+BIBINPUTS := ${BIBINPUTS}:$(realpath ${BUILD_DIR})
+else
+BIBINPUTS := $(realpath ${BUILD_DIR})
+endif
 BIBTEX = bibtex
 
 %.aux: %.tex ${PYGMENTS_PATH}
 	@printf "===>> LaTeX: %s -> %s\n" "$<" "$@"
+	echo "${BIBINPUTS}"
 	@cd $(dir $<) && \
 		${LATEX} $(patsubst %.tex,%,$(notdir $<))
 
@@ -74,6 +83,7 @@ BIBTEX = bibtex
 
 %.pdf: %.tex
 	@printf "===>> LaTeX: %s -> %s\n" "$<" "$@"
+	echo "${BIBINPUTS}"
 	@cd $(dir $<) && \
 		${LATEX} $(patsubst %.tex,%,$(notdir $<)) && \
 		${LATEX} $(patsubst %.tex,%,$(notdir $<))

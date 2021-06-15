@@ -1,6 +1,7 @@
 \chapter*{Abstract}\label{abstract}
 
-This report provides an overview of the development of real-time systems. It then considers a model
-and system that can be used to develop static and dynamic real-time systems that satisfy not only
-real-time requirements, but also requirements of criticality and security. It extends on previous
-work using the seL4 microkernel to build a general-purpose platform for real-time systems.
+This report provides an overview of strategies used to guarantee the
+timing behaviour of hard and mixed-criticality realtime systems. It then
+proposes a set of changes the the MCS seL4 extensions that ensure the
+kernel-level scheduler can guarantee the assumptions made by common
+timing analysis processes for fixed-priority scheduling.
