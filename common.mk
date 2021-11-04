@@ -118,4 +118,4 @@ ${BUILD_DIR}/%.tex: %.rst ${BUILD_DIR} ${PYGMENTS_PATH}
 
 ${BUILD_DIR}/%.eps: %.svg ${BUILD_DIR}
 	@printf "===>> Inkscape: %s -> %s\n" "$<" "$@"
-	@inkscape -D -E $@ -f $<
+	@inkscape -D -o $@ $<
